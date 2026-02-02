@@ -1,43 +1,10 @@
 import { useState } from 'react'
-import './App.css'
+import './InputComponent.css'
 
 export default function InputComponent() {
-  const firstCategory = Object.keys(cv)[0];
-  const [activeCategory, setActiveCategory] = useState(firstCategory);
-
-  const handleCategory = (category) => {
-    setActiveCategory(category);
-  }
-  const DisplayForm = ({title, description, fields}) => {
-    return (
-      <div className='category'>
-        <div className='category-header'>
-          <h1 className='category-title'>{title}</h1>
-          <h2 className='category-descirption'>{description}</h2>
-        </div>
-        <div className='category-body'>
-          <form onSubmit={e => e.preventDefault()}>
-            {fields.map((property) => {
-              return (
-                <li>
-                  <input
-                    name={property.name}
-                    placeholder={property.placeholder}
-                    type={property.type}
-                    onChange={onChange}
-                  />
-                </li>
-              )
-            })}
-          </form>
-        </div>
-      </div>
-    )
-  }
-
-  const cv = {
+    const cv = {
     personal: {
-      title: 'Personal',
+      title: 'Personal details',
       description: 'Help recruiters understand who you are',
       fields: [
         {name: 'firstName', placeholder: 'First Name', type: 'text'}, 
@@ -47,20 +14,20 @@ export default function InputComponent() {
       ]
     },
     contact: {
-      title: 'Contact',
+      title: 'Contact information',
       description: 'Your contact info for recruiters to get back to you',
       fields: [
-        {name: 'email', placeholder: '@ Email', type: 'email', pattern: '.+@example\.com'},
+        {name: 'address', placeholder: 'Address', type: 'text'}, 
+        {name: 'email', placeholder: '@', type: 'email', pattern: '.+@example\.com'},
         {name: 'phone', placeholder: 'Phone', type: 'tel'},
         {name: 'country', placeholder: 'Country', type: 'text'},
-        {name: 'address', placeholder: 'Address', type: 'text'}, 
       ]
     },
     experience: {
       title: 'Work Experience',
       description: 'Tell recruiters about your previous roles and achievements',
       fields: [
-        {name: 'jobTitle', placeholder: 'Job Title', type: 'text'},
+        {name: 'jobExperienceTitle', placeholder: 'Job Title', type: 'text'},
         {name: 'company', placeholder: 'Company', type: 'text'},
         {name: 'startDate', placeholder: 'Start Date', type: 'date'},
         {name: 'endDate', placeholder: 'End Date', type: 'date'},
@@ -93,69 +60,115 @@ export default function InputComponent() {
       ]
     }
   }
-  function handlePersonalInfo(e, input) {
-    const [firstName, setFirstName] = useState('');
-    const [secondName, setSecondName] = useState('');
-    const [jobTitle, setJobTitle] = useState('');
-    const [photo, setPhoto] = useState('');
-  }
 
-  function handleContactInfo() {
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [country, setCountry] = useState('');
-    const [address, setAddress] = useState('');
-  }
+  const firstCategory = Object.keys(cv)[0];
+  const [activeCategory, setActiveCategory] = useState(firstCategory);
 
-  function handleWorkExperience() {
-    const [jobTitle, setJobTitle] = useState('');
-    const [company, setCompany] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
-    const [location, setLocation] = useState('');
-    const [description, setDescription] = useState('');
-  }
+  const [inputData, setInputData] = useState({
+    firstName: '',
+    lastName: '',
+    jobTitle: '',
+    photo: null,
+    email: '',
+    phone: '',
+    country: '',
+    address: '',
+    jobExperienceTitle: '',
+    company: '',
+    startDate: '',
+    endDate: '',
+    location: '',
+    jobDescription: '',
+    skill: '',
+    language: '',
+    school: '',
+    schoolStartDate: '',
+    schoolEndDate: '',
+    schoolDescription: ''
+  })
 
-  function handleSkills() {
-    const [skill, setSkill] = useState('');
-    const [level, setLevel] = useState('')
+  const handleCategory = (category) => {
+    setActiveCategory(category);
   }
-
-  function handleLanguages() {
-    const [language, setLanguage] = useState('');
-    const [level, setLevel] = useState('')
-  }
-
-  function handleEducation() {
-    const [school, setSchool] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
-    const [description, setDescription] = useState('');
-  }
-  // const categories = [
-  //   {title: "personal", description: "Help recruiters understand who you are"},
-  //   {title: "contact", description: "Your contact info for recruiters to get back to you"},
-  //   {title: "experience", description: "Tell recruiters about your previous roles and achievements"},
-  //   {title: "skills", description: "Add your skills to show what you do best"}, 
-  //   {title: "languages", description: "Tell about your language skills"}, 
-  //   {title: "education", description: "Show what you studied and what you learnt"}
-  // ]
-
   return (
     <>
-    <div>
-        <ul>
-          {Object.keys(cv).map((category) => {
-            return (
+    <div className='container'>
+      <ul>
+        {Object.keys(cv).map((category) => {
+          return (
+            <li key={category}>
               <button onClick={() => handleCategory(category)}>
                 {cv[category].title}
               </button>
-            )
-          })}
-        </ul>
-      </div>
-      <div>
-        <DisplayForm {...cv[activeCategory]} />
+            </li>
+          )
+        })}
+      </ul>
+      <div className='category'>
+          <div className='category-header'>
+            <h1 className='category-title'>{cv[activeCategory].title}</h1>
+            <h2 className='category-descirption'>{cv[activeCategory].description}</h2>
+          </div>
+          <div className='category-body'>
+            <form onSubmit={e => e.preventDefault()}>
+              {cv[activeCategory].fields.map((property) => {
+                return (
+                  <li key={property.name}>
+                    <input
+                      name={property.name}
+                      placeholder={property.placeholder}
+                      type={property.type}
+                      onChange={(e) => {
+                        const inputType = property.type === 'file' ? e.target.files[0] : e.target.value;
+                         setInputData({
+                        ...inputData,
+                        [property.name]: inputType
+                        })
+                      }
+                      }
+                    />
+                  </li>
+                )
+              })}
+            </form>
+          </div>
+        </div>
+        <div className='display'>
+          <div className='left'>
+            <section className='personal'>
+              <div>
+                {inputData.photo ? (<img className='personal-photo' src={URL.createObjectURL(inputData.photo)} alt='Profile photo'/>) : null}
+              </div>
+              <h1 className='personal-title'>
+                {inputData.firstName}{' '}
+                {inputData.lastName}{' '}
+              </h1>
+              <p className='description'>
+                {inputData.jobTitle}{' '}
+              </p>
+              <h2>Contacts</h2>
+              <h3>Address</h3>
+              <p className='description'>
+                {inputData.address}{' '}
+              </p>
+              <h3>Country</h3>
+              <p className='description'>
+                {inputData.country}{' '}
+              </p>
+              <h3>Email</h3>
+              <p className='description'>
+                {inputData.email}{' '}
+              </p>
+              <h3>Phone</h3>
+              <p className='description'>
+                {inputData.phone}{' '}
+              </p>
+            </section>
+          </div>
+          <div className='right'>
+
+          </div>
+        </div>
       </div>
     </>
   )
