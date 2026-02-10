@@ -57,6 +57,22 @@
   border-radius: 10px;
   width: 90%;
 }
+
+.delete-photo {
+  background-image: url('./assets/trash-bin.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+}
+
+.delete-photo:hover {
+  background-color: transparent;
+}
+
+.delete-photo:focus {
+  outline: none;
+}
+
 .cv {
   background-color: rgb(190 190 190);
   padding: 2rem;
@@ -71,12 +87,12 @@
 
 .section-1 {
   background-color: rgb(0, 61, 0);
-  text-align: center;
   color: white;
   padding: 2rem;
 }
 .personal-photo {
   max-width: 30%;
+  max-height: 50%;
   border-radius: 50px;
   border: 1px solid black;
 }
@@ -109,4 +125,13 @@
 .section-sub-title {
   font-weight: bold;
   font-size: 1rem;
+}
+
+.work {
+  display: grid;
+  grid-template: 50px 50px / 50px 50px;
+}
+
+.date {
+  display: inline;
 }

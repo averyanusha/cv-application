@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './CVBuilder.css'
 import DisplayContact from './components/ContactComponent';
-import DisplayExperience from './components/ExperienceComponent';
+import DisplayExperience from './components/ExperienceDegreeComponent';
 import downloadIcon from './assets/download-icon.svg';
 import horizontalLayout from './assets/3-bricks-layout.png';
 
@@ -44,6 +44,7 @@ export default function CvComponent() {
       description: 'Show what you studied and what you learnt',
       fields: [
         {name: 'school', placeholder: 'School', type: 'text'},
+        {name: 'degree', placeholder:'Degree', type: 'text'},
         {name: 'schoolStartDate', placeholder: 'Start Date', type: 'date'},
         {name: 'schoolEndDate', placeholder: 'End Date', type: 'date'},
         {name: 'schoolDescription', placeholder: 'Describe what you studied', text: 'text'}
@@ -83,31 +84,49 @@ export default function CvComponent() {
       country: '',
       address: '',
     },
-    experience: {
-      jobExperienceTitle: '',
-      company: '',
-      startDate: '',
-      endDate: '',
-      location: '',
-      jobDescription: '',
-    },
-    education: {
-      school: '',
-      schoolStartDate: '',
-      schoolEndDate: '',
-      schoolDescription: ''
-    },
-    skills: {
-      skill: ''
-    },
-    language: {
-      language: ''
-    },
+    experience: [
+      { id: 'exp1', jobExperienceTitle: '', company: '', startDate: '', endDate: '', location: '', jobDescription: '' }
+    ],
+    education: [
+      { id: 'educ1', school: '', degree: '', schoolStartDate: '', schoolEndDate: '', schoolDescription: '' }
+    ],
+    skills: [
+      { id: 'skill1', skill: '' }
+    ],
+    language: [
+      { id: 'lang1', language: ''}
+    ],
   });
+
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleCategory = (category) => {
     setActiveCategory(category);
   };
+
+  const handleDelete = (inputField) => {
+    setInputData({
+      ...inputData,
+      [activeCategory]: {
+        ...inputData[activeCategory],
+        [inputField]: null
+      }
+    })
+  };
+
+  const handleAddition = () => {
+    const newItem = {};
+    cv[activeCategory].fields.forEach(field => {
+      newItem[field.name] = '';
+    });
+    newItem.id = `${activeCategory}${Date.now()}`;
+
+    setInputData({
+      ...inputData,
+      [activeCategory]: [...inputData[activeCategory], newItem]
+    })
+    setCurrentIndex(currentIndex + 1);
+  }
 
   let categoryNumber = 1;
 
@@ -122,6 +141,7 @@ export default function CvComponent() {
     localStorage.setItem('data', JSON.stringify(dataToSave))
   }, [inputData]);
   
+  const isArrayCategory = Array.isArray(inputData[activeCategory]);
 
   return (
     <>
@@ -154,7 +174,42 @@ export default function CvComponent() {
         </div>
           <div className='category-body'>
             <form onSubmit={e => e.preventDefault()} className='category-form'>
-              {cv[activeCategory].fields.map((property) => {
+            {isArrayCategory ? (
+              inputData[activeCategory].map((entry, entryIndex) => {
+                return (
+                  <div key={entry.id} className='entry-block'>
+                    {cv[activeCategory].fields.map((property) => {
+                      return (
+                        <li key={property.name}>
+                          <input
+                            name={property.name}
+                            type={property.type}
+                            placeholder={property.placeholder}
+                            className='input-item'
+                            onChange={(e) => {
+                              const inputType = e.target.value;
+                              setInputData({
+                                ...inputData,
+                                [activeCategory]: inputData[activeCategory].map((item, index) => {
+                                  if (index === entryIndex) {
+                                    return {...item, [property.name]:inputType}
+                                  }
+                                  return item;
+                                })
+                              })
+                            }}
+                            value={entry[property.name] ?? ''} 
+                          />
+                        </li>
+                      )
+                    })}
+                    {isArrayCategory ? (
+                      <button type='button' className='add-section' onClick={() => {handleAddition()}}>Add {activeCategory}</button>
+                    ) : null}
+                  </div>
+                )
+              })
+            ) : cv[activeCategory].fields.map((property) => {
                 const isFile = property.type === 'file';
                 return (
                   <li key={property.name}>
@@ -164,45 +219,54 @@ export default function CvComponent() {
                       type={property.type}
                       className='input-item'
                       onChange={(e) => {
-                        const inputType = isFile ? e.target.files[0] : e.target.value;
-                         setInputData({
+                        let inputType;
+                        if (isFile) {
+                          inputType = e.target.files[0];
+                        } else if (property.type === 'date') {
+                          const [year, month] = e.target.value.split('-');
+                          inputType = `${year}-${month}`;
+                        } else {
+                          inputType = e.target.value;
+                        }
+                        setInputData({
                           ...inputData,
                           [activeCategory]: {
                             ...inputData[activeCategory],
                             [property.name]: inputType
                           }
-                        })
+                        });
                       }}
-                      {...(!isFile ? {value: inputData[activeCategory][property.name] ?? ''} : {})}
+                      {...(!isFile ? { value: inputData[activeCategory][property.name] ?? '' } : {})}
                     />
+                    {isFile && (
+                      <button type='button' onClick={() => handleDelete(property.name)} />
+                    )}
                   </li>
-                )
-              })}
+                );
+            })}
             </form>
           </div>
         </div>
         <div className='cv'>
           <div className='cv-display'>
             <div className='cv-brick section-1'>
-              <section className='cv-section'>
-                <div>
-                  {inputData.personal.photo ? (<img className='personal-photo' src={URL.createObjectURL(inputData.personal.photo)} alt='Profile photo'/>) : null}
-                </div>
-                <h2 className='personal-title'>
-                  {inputData.personal.firstName}{' '}
-                  {inputData.personal.lastName}{' '}
-                </h2>
-                <p className='description'>
-                  {inputData.personal.jobTitle}{' '}
-                </p>
-                <div className='line'></div>
-              </section>
-                {Object.values(inputData.contact).some(value => value !== '') ? <DisplayContact category={cv.contact} data={inputData.contact} title="Contact information" /> : ''}
+              {inputData.personal.photo ? (<img className='personal-photo' src={URL.createObjectURL(inputData.personal.photo)} alt='Profile photo'/>) : null}
+              <h2 className='personal-title'>
+                {inputData.personal.firstName}{' '}
+                {inputData.personal.lastName}{' '}
+              </h2>
+              <p className='description'>
+                {inputData.personal.jobTitle}{' '}
+              </p>
+              <div className='line'></div>
+              {Object.values(inputData.contact).some(value => value !== '') ? <DisplayContact category={cv.contact} data={inputData.contact} title="Contact information" /> : ''}
             </div>
             <div className='cv-brick section-2'>
-                {Object.values(inputData.experience).some(value => value !== '') ? <DisplayExperience category={cv.experience} data={inputData.experience} title="Professional experience" /> : ''}
+              {Object.values(inputData.experience).some(value => value !== '') ? <DisplayExperience category={cv.experience} data={inputData.experience} title="Professional experience" /> : ''}
             </div>
-            <div className='cv-brick section-3'></div>
+            <div className='cv-brick section-3'>
+              {Object.values(inputData.education).some(value => value !== '') ? <DisplayExperience category={cv.education} data={inputData.education} title="Education" /> : ''}
+            </div>
           </div>
         </div>
       </div>
