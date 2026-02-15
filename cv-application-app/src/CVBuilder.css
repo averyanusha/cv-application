@@ -25,18 +25,18 @@
   display: inline-flex;
   gap: 1rem;
 }
-.category {
-  padding: 0 2rem;
+
+.category-list {
+  padding: 2rem 0;
+}
+.inputs {
+  padding: 2rem;
   background-color: white;
   border-radius: 20px;
   color: gray;
 }
 
-.category-header {
-  margin: 1rem 0;
-}
-
-.category-title {
+.inputs-title {
   font-size: 2rem;
 }
 
@@ -46,16 +46,11 @@
   margin: 0.5rem;
 }
 
-.category-body form {
-  display: grid;
-  grid-template-rows: 30% 30% 30% 30% 30%;
-  margin: 10px 0;
-}
-
-.input-item {
+.inputs-item {
   padding: 1rem;
   border-radius: 10px;
   width: 90%;
+  margin: 10px 0px;
 }
 
 .delete-photo {
@@ -89,6 +84,10 @@
   background-color: rgb(0, 61, 0);
   color: white;
   padding: 2rem;
+}
+
+.section-item {
+  display: grid;
 }
 .personal-photo {
   max-width: 30%;
