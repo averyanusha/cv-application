@@ -5,6 +5,7 @@ import DisplayContact from './components/ContactComponent';
 import DisplayExperience from './components/ExperienceDegreeComponent';
 import DisplaySkillLanguage from './components/SkillLanguageComponent';
 import ColorPicker from './components/ColorPicker';
+import CategoriesComponent from './components/CategoriesComponent';
 
 export default function CvComponent() {
   const handlePdfDownload = () => {
@@ -119,8 +120,12 @@ export default function CvComponent() {
     ],
   });
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [activeLayout, setActiveLayout] = useState('horizontal');
-  const [activeColor, setActiveColor] = useState('#003d00');
+
+  const savedLayout = localStorage.getItem('layout');
+  const [activeLayout, setActiveLayout] = useState(savedLayout ? JSON.parse(savedLayout) : 'horizontal');
+
+  const savedColor = localStorage.getItem('color');
+  const [activeColor, setActiveColor] = useState(savedColor ? JSON.parse(savedColor) : '#003d00');
   const [personalSectionColor, setPersonalSectionColor] = useState('white');
 
   const handleCategory = (category) => {
@@ -158,8 +163,6 @@ export default function CvComponent() {
     })
   }
 
-  let categoryNumber = 1;
-
   useEffect(() => {
     const dataToSave = {
       ...inputData,
@@ -168,9 +171,16 @@ export default function CvComponent() {
         photo: null
       }
     }
-    localStorage.setItem('data', JSON.stringify(dataToSave))
+    localStorage.setItem('data', JSON.stringify(dataToSave));
   }, [inputData]);
   
+  useEffect(() => {
+    localStorage.setItem('layout', JSON.stringify(activeLayout));
+  }), [activeLayout];
+
+  useEffect(() => {
+    localStorage.setItem('color', JSON.stringify(activeColor));
+  }), [activeColor]
   const isArrayCategory = Array.isArray(inputData[activeCategory]);
 
   const handleLayout = (layout) => {
@@ -190,20 +200,7 @@ export default function CvComponent() {
             <button className='download-button' onClick={() => handlePdfDownload()}></button>
           </div>
         </div>
-        <ul className='category-list'>
-          {Object.keys(cv).map((category) => {
-            return (
-              <li key={category} className='category-item'>
-                <button className='category-button' onClick={() => handleCategory(category)}>
-                  <span className='number'>
-                    {categoryNumber++}
-                  </span>
-                  {cv[category].title}
-                </button>
-              </li>
-            )
-          })}
-        </ul>
+        <CategoriesComponent cv={cv} handleCategory={handleCategory}/>
         <div className='inputs'>
           <div className='inputs-header'>
             <h2 className='inputs-title'>{cv[activeCategory].title}</h2>
