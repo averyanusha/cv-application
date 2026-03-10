@@ -1,18 +1,18 @@
 #root {
   max-width: 100%;
   margin: 0 auto;
+  --scale: 0.6;
 }
 
 .container {
   padding: 2rem;
   display: grid;
-  grid-template-columns: 18% 40% 40%;
+  grid-template-columns: 18% 32% 43%;
   gap: 20px;
 }
 
 .nav {
   display: flex;
-  justify-content: space-around;
   grid-column: 1 / 4;
 }
 
@@ -21,19 +21,116 @@
   font-size: 2.5rem;
 }
 
-.download-button {
-  display: inline-flex;
-  gap: 1rem;
+.color-picker {
+  padding: 0;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  box-shadow: rgb(169, 174, 180) 0px 8px 24px;;
 }
 
-.category-list {
-  padding: 2rem 0;
+input[type='color']::-webkit-color-swatch {
+  border: none;
+  outline: none;
 }
+
+.download-button {
+  background-image: url('../src/assets/download-icon.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin-left: 2rem;
+  height: 3rem;
+}
+
+
+.layout-button {
+  min-width: 3rem;
+  height: 3rem;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  margin-left: 2rem;
+}
+
+.horizontal {
+  background-image: url('../src/assets/top-brick-layout.png');
+}
+
+.left {
+  background-image: url('../src/assets/left-brick-layout.png');
+}
+
+.right {
+  background-image: url('../src/assets/right-brick-layout.png');
+}
+
+.layout-left {
+  grid-template-columns: 35% 65%;
+  grid-template-rows: repeat(3, auto);
+}
+
+.layout-left-top {
+  grid-column: 1;
+  grid-row: 1 / 4;
+  flex-direction: column;
+}
+
+.layout-left-middle {
+  color: white;
+  grid-column: 1;
+  grid-row: 2 / 3;
+}
+.layout-left-bottom {
+  color: white;
+  grid-column: 1;
+  grid-row: 3 / 4;
+}
+
+.layout-right {
+  grid-template-columns: 65% 35%;
+  grid-template-rows: repeat(3, auto);
+}
+
+.layout-right-top {
+  grid-column: 2;
+  grid-row: 1 / 4;
+  flex-direction: column;
+}
+
+.layout-right-middle {
+  color: white;
+  grid-column: 2;
+  grid-row: 2 / 3;
+}
+.layout-right-bottom {
+  color: white;
+  grid-column: 2;
+  grid-row: 3 / 4;
+}
+
+
+.layout-right-switch {
+  grid-column: 1;
+}
+.no-flex {
+  flex-direction: column;
+}
+
+.category-button {
+  padding: 1em 0.5em;
+  margin: 0.1em;
+  border: 1px solid #646cff;
+}
+
 .inputs {
   padding: 2rem;
+  min-height: 50vh;
   background-color: white;
   border-radius: 20px;
   color: gray;
+  align-self: self-start;
 }
 
 .inputs-title {
@@ -53,68 +150,76 @@
   margin: 10px 0px;
 }
 
-.delete-photo {
+.delete-button {
   background-image: url('./assets/trash-bin.svg');
   background-repeat: no-repeat;
   background-position: center;
   border: none;
 }
 
-.delete-photo:hover {
+.delete-button:hover {
   background-color: transparent;
 }
 
-.delete-photo:focus {
+.delete-button:focus {
   outline: none;
 }
 
 .cv {
-  background-color: rgb(190 190 190);
-  padding: 2rem;
+  background-color: rgb(215, 215, 215);
+  align-self: self-start;
 }
 
+.cv-wrapper {
+  position: relative;
+  display: block;
+  padding: 2rem;
+  height: calc(100vh - 6rem);
+  overflow: auto;
+  align-self: self-start;
+}
 .cv-display {
   display: grid;
-  grid-template-rows: 10rem 10rem 10rem;
+  width: 794px;
+  min-height: 1123px;
   background-color: white;
-  min-height: 80vh;
+  transform: scale(var(--scale));
+  transform-origin: top left;
 }
-
+.cv-brick {
+  padding: 2rem 2rem 0 2rem;
+}
 .section-1 {
-  background-color: rgb(0, 61, 0);
+  display: flex;
   color: white;
-  padding: 2rem;
 }
 
-.section-item {
-  display: grid;
-}
 .personal-photo {
-  max-width: 30%;
-  max-height: 50%;
-  border-radius: 50px;
+  max-width: fit-content;
+  border-radius: 70px;
   border: 1px solid black;
+  max-height: 7rem;
+  margin: 0 1rem;
 }
 
 .personal-title {
-  font-size: 1.5rem;
-  margin: 1rem;
+  font-size: 2rem;
+  margin-bottom: 1rem;
 }
 
 .description {
-  font-size: 0.8rem;
+  display: inline;
   font-weight: 200;
+  padding-right: 1rem;
 }
 
 .line {
-  height: 4px;
   width: 100%;
-  color: white;
+  height: 2px;
+  background-color: white;
+  margin-top: 1rem;
 }
 
-.right {
-  padding: 2rem;
-}
 
 .section-title {
   font-weight: bold;
@@ -124,13 +229,19 @@
 .section-sub-title {
   font-weight: bold;
   font-size: 1rem;
+  padding-right: 1rem;
 }
 
-.work {
-  display: grid;
-  grid-template: 50px 50px / 50px 50px;
+.row {
+  display: flex;
+  margin: 1rem 0;
+}
+.skills {
+  margin-right: 1rem;
 }
 
-.date {
-  display: inline;
+@media (min-width: 1400px) {
+  .cv-display {
+    --scale: 0.8;
+  }
 }

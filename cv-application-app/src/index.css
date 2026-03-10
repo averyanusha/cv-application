@@ -75,15 +75,15 @@ h1 {
 
 button {
   border-radius: 8px;
-  border: 1px solid #646cff;
   background-color: transparent;
-  padding: 1em 0.5em;
-  margin: 0.1em;
+  padding: 1rem;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
   transition: border-color 0.25s;
+  border: none;
+  outline: none;
 }
 button:hover {
   background-color: #646cff;
