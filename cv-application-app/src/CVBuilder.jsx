@@ -6,6 +6,7 @@ import DisplayExperience from './components/ExperienceDegreeComponent';
 import DisplaySkillLanguage from './components/SkillLanguageComponent';
 import ColorPicker from './components/ColorPicker';
 import CategoriesComponent from './components/CategoriesComponent';
+import InputsComponent from './components/InputsComponent';
 
 export default function CvComponent() {
   const handlePdfDownload = () => {
@@ -14,8 +15,7 @@ export default function CvComponent() {
       margin: 0,
       filename: 'my-cv.pdf',
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      pagebreak: { mode: 'avoid-all' }
+      html2canvas: { scale: 1.5 }
     };
     const originalTransform = element.style.transform;
     element.style.transform = 'none';
@@ -119,49 +119,19 @@ export default function CvComponent() {
       { id: 'lang1', language: '', level: ''}
     ],
   });
-  const [currentIndex, setCurrentIndex] = useState(0);
 
   const savedLayout = localStorage.getItem('layout');
   const [activeLayout, setActiveLayout] = useState(savedLayout ? JSON.parse(savedLayout) : 'horizontal');
 
   const savedColor = localStorage.getItem('color');
   const [activeColor, setActiveColor] = useState(savedColor ? JSON.parse(savedColor) : '#003d00');
-  const [personalSectionColor, setPersonalSectionColor] = useState('white');
+
+  const savedHeaderColor = localStorage.getItem('headerColor');
+  const [personalSectionColor, setPersonalSectionColor] = useState(savedHeaderColor ? JSON.parse(savedHeaderColor) : 'white');
 
   const handleCategory = (category) => {
     setActiveCategory(category);
   };
-
-  const deletePhoto = (inputField) => {
-    setInputData({
-      ...inputData,
-      [activeCategory]: {
-        ...inputData[activeCategory],
-        [inputField]: null
-      }
-    })
-  };
-
-  const handleAddition = () => {
-    const newItem = {};
-    cv[activeCategory].fields.forEach(field => {
-      newItem[field.name] = '';
-    });
-    newItem.id = `${activeCategory}${Date.now()}`;
-
-    setInputData({
-      ...inputData,
-      [activeCategory]: [...inputData[activeCategory], newItem]
-    })
-    setCurrentIndex(currentIndex + 1);
-  }
-
-  const handleDelete = (id) => {
-    setInputData({
-      ...inputData,
-      [activeCategory]:inputData[activeCategory].filter((item) => item.id !== id)
-    })
-  }
 
   useEffect(() => {
     const dataToSave = {
@@ -180,8 +150,11 @@ export default function CvComponent() {
 
   useEffect(() => {
     localStorage.setItem('color', JSON.stringify(activeColor));
-  }), [activeColor]
-  const isArrayCategory = Array.isArray(inputData[activeCategory]);
+  }), [activeColor];
+
+  useEffect(() => {
+    localStorage.setItem('headerColor', JSON.stringify(personalSectionColor));
+  }), [personalSectionColor];
 
   const handleLayout = (layout) => {
     setActiveLayout(layout);
@@ -201,98 +174,7 @@ export default function CvComponent() {
           </div>
         </div>
         <CategoriesComponent cv={cv} handleCategory={handleCategory}/>
-        <div className='inputs'>
-          <div className='inputs-header'>
-            <h2 className='inputs-title'>{cv[activeCategory].title}</h2>
-            <p className='inputs-descirption'>{cv[activeCategory].description}</p>
-          </div>
-            <div className='category-body'>
-              <form onSubmit={e => e.preventDefault()} className='category-form'>
-              {isArrayCategory ? (
-                inputData[activeCategory].map((entry, entryIndex) => {
-                  return (
-                    <div key={entry.id} className='entry-block'>
-                      {cv[activeCategory].fields.map((property) => {
-                        return (
-                          <div key={property.name}>
-                            {property.type === 'select' ? <select className='inputs-item' onChange={(e) => {
-                              setInputData({
-                                ...inputData,
-                                [activeCategory]: inputData[activeCategory].map((item, index) => {
-                                  if(index === entryIndex) {
-                                    return {...item, [property.name] : e.target.value};
-                                  }
-                                  return {...item};
-                                })
-                              })
-                            }}>{property.options.map((option) => {
-                              return(
-                                <option key={option} value={option}>{option}</option>
-                              )
-                            })}</select> : 
-                            <input
-                              name={property.name}
-                              type={property.type}
-                              placeholder={property.placeholder}
-                              className='inputs-item'
-                              onChange={(e) => {
-                                setInputData({
-                                  ...inputData,
-                                  [activeCategory]: inputData[activeCategory].map((item, index) => {
-                                    if (index === entryIndex) {
-                                      return {...item, [property.name] : e.target.value};
-                                    }
-                                    return item;
-                                  })
-                                })
-                              }}
-                              value={entry[property.name] ?? ''} 
-                            />
-                            }
-                          </div>
-                        )
-                      })}
-                      <button type='button' className='add-section' onClick={() => handleAddition()}>+ Add</button>
-                      {inputData[activeCategory].length > 1 ? <button onClick={() => handleDelete(entry.id)}>Delete</button> : ''}
-                    </div>
-                  )
-                })
-              ) : cv[activeCategory].fields.map((property) => {
-                  const isFile = property.type === 'file';
-                  return (
-                    <div key={property.name} className='category-input'>
-                      <input
-                        key={property.name}
-                        name={property.name}
-                        placeholder={property.placeholder}
-                        type={property.type}
-                        className={isFile ? 'input-photo' :'inputs-item'}
-                        onChange={(e) => {
-                          let inputType;
-                          if (isFile) {
-                            inputType = e.target.files[0];
-                          } else {
-                            inputType = e.target.value;
-                          }
-                          setInputData({
-                            ...inputData,
-                            [activeCategory]: {
-                              ...inputData[activeCategory],
-                              [property.name]: inputType
-                            }
-                          });
-                        }}
-                        {...(!isFile ? { value: inputData[activeCategory][property.name] ?? '' } : {})}
-                      />
-                      {isFile && (
-                        <button type='button' className='delete-button' onClick={() => deletePhoto(property.name)} />
-                      )}
-                    </div>
-                  );
-              })}
-              </form>
-            </div>
-        </div>
+        <InputsComponent cv={cv} activeCategory={activeCategory} inputData={inputData} setInputData={setInputData} />
         <div className='cv'>
           <div className='cv-wrapper'>
             <div className={`cv-display ${activeLayout === 'left' ?  'layout-left' : activeLayout === 'right' ? 'layout-right' : ''}`} id='element-to-print'>

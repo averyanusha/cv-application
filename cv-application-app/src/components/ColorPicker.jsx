@@ -23,7 +23,8 @@ export default function ColorPicker({activeColor, setActiveColor, personalSectio
           const isBrighter = brightness > 127.5;
           setPersonalSectionColor(isBrighter ? 'black' : 'white');
           setActiveColor(e.target.value);
-        }}>
+        }}
+        style={{ backgroundColor: activeColor}}>
       </input>
     </>
   )

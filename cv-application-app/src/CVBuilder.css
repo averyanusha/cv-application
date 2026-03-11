@@ -181,17 +181,18 @@ input[type='color']::-webkit-color-swatch {
 .cv-display {
   display: grid;
   width: 794px;
-  min-height: 1123px;
+  height: 1123px;
   background-color: white;
   transform: scale(var(--scale));
   transform-origin: top left;
 }
 .cv-brick {
-  padding: 2rem 2rem 0 2rem;
+  padding: 0 2rem;
 }
 .section-1 {
   display: flex;
   color: white;
+  padding-top: 2rem;
 }
 
 .personal-photo {
@@ -232,6 +233,9 @@ input[type='color']::-webkit-color-swatch {
   padding-right: 1rem;
 }
 
+.section-2 {
+  padding-top: 2rem;
+}
 .row {
   display: flex;
   margin: 1rem 0;
