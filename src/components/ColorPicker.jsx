@@ -9,7 +9,7 @@ function hexToRgb(hex) {
     : null;
 }
 
-export default function ColorPicker({activeColor, setActiveColor, personalSectionColor, setPersonalSectionColor}) {
+export default function ColorPicker({activeColor, setActiveColor, setPersonalSectionColor}) {
   return (
     <>
       <input

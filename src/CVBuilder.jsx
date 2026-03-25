@@ -166,7 +166,7 @@ export default function CvComponent() {
         <div className='nav'>
           <h1 className='title'>Your resume</h1>
           <div className='buttons'>
-            <ColorPicker activeColor={activeColor} setActiveColor={setActiveColor} personalSectionColor={personalSectionColor} setPersonalSectionColor={setPersonalSectionColor}/>
+            <ColorPicker activeColor={activeColor} setActiveColor={setActiveColor} setPersonalSectionColor={setPersonalSectionColor}/>
             <button className='layout-button horizontal' onClick={() => handleLayout('horizontal')}></button>
             <button className='layout-button left' onClick={() => handleLayout('left')}></button>
             <button className='layout-button right' onClick={() => handleLayout('right')}></button>
