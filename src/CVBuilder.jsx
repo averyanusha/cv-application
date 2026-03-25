@@ -174,7 +174,7 @@ export default function CvComponent() {
           </div>
         </div>
         <CategoriesComponent cv={cv} handleCategory={handleCategory}/>
-        <InputsComponent cv={cv} activeCategory={activeCategory} inputData={inputData} setInputData={setInputData} />
+        <InputsComponent cv={cv} activeCategory={activeCategory} inputData={inputData} setInputData={setInputData} handleCategory={handleCategory}/>
         <div className='cv'>
           <div className='cv-wrapper'>
             <div className={`cv-display ${activeLayout === 'left' ?  'layout-left' : activeLayout === 'right' ? 'layout-right' : ''}`} id='element-to-print'>

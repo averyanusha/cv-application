@@ -1,4 +1,4 @@
-export default function InputsComponent ({cv, activeCategory, inputData, setInputData}) {
+export default function InputsComponent ({cv, activeCategory, inputData, setInputData, handleCategory}) {
   const deletePhoto = (inputField) => {
     setInputData({
       ...inputData,
@@ -31,6 +31,8 @@ export default function InputsComponent ({cv, activeCategory, inputData, setInpu
   }
 
   const isArrayCategory = Array.isArray(inputData[activeCategory]);
+
+  const cvArray = Object.keys(cv);
   return (
     <div className='inputs'>
       <div className='inputs-header'>
@@ -122,6 +124,9 @@ export default function InputsComponent ({cv, activeCategory, inputData, setInpu
               );
           })}
         </form>
+        {cvArray.indexOf(activeCategory) < cvArray.length - 1 ? <button className='next-button' onClick={() => handleCategory(cvArray[cvArray.indexOf(activeCategory) + 1])}>
+          Next
+        </button> : ''}
       </div>
     </div>
   )

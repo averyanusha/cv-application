@@ -9,7 +9,7 @@ export default function CategoriesComponent ({cv, handleCategory}) {
             <button className='category-button' onClick={() => handleCategory(category)}>
               <span className='number'>
                 {categoryNumber++}
-              </span>
+                </span>
               {cv[category].title}
             </button>
           </li>
